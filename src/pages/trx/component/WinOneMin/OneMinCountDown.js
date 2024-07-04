@@ -14,7 +14,7 @@ import countdownlast from "../../../../assets/countdownlast.mp3";
 import circle from "../../../../assets/images/circle-arrow.png";
 import howToPlay from "../../../../assets/images/user-guide.png";
 import trxtimerbackground from "../../../../assets/trxtimerbackground.png";
-import { dummycounterFun, trx_game_image_index_function, updateNextCounter } from "../../../../redux/slices/counterSlice";
+import { dummycounterFun, trx_game_historyFn, trx_game_image_index_function, updateNextCounter } from "../../../../redux/slices/counterSlice";
 import { endpoint } from "../../../../services/urls";
 import Policy from "../policy/Policy";
 import ShowImages from "./ShowImages";
@@ -54,7 +54,7 @@ const OneMinCountDown = ({ fk }) => {
       }
       if (onemin === 0) {
         client.refetchQueries("trx_gamehistory");
-        client.refetchQueries("trx_gamehistory_chart");
+       
         client.refetchQueries("my_trx_Allhistory");
         client.refetchQueries("my_trx_history");
         client.refetchQueries("walletamount");
@@ -106,8 +106,11 @@ const OneMinCountDown = ({ fk }) => {
       }
     }
     dispatch(trx_game_image_index_function(array));
+    dispatch(trx_game_historyFn(game_history?.data?.result));
   }, [game_history?.data?.result]);
 
+  
+  
 
 
 

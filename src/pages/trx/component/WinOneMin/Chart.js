@@ -1,39 +1,18 @@
 import { Box, Stack, Typography } from "@mui/material";
 import CircularProgress from '@mui/material/CircularProgress';
 import TablePagination from "@mui/material/TablePagination";
-import axios from "axios";
 import * as React from "react";
-import toast from "react-hot-toast";
-import { useQuery } from "react-query";
-import { zubgback, zubgbackgrad, zubgtext } from "../../../../Shared/color";
+import { zubgback, zubgtext } from "../../../../Shared/color";
 import history from "../../../../assets/images/list.png";
-import { endpoint } from "../../../../services/urls";
-const Chart = ({ gid }) => {
+import { useSelector } from "react-redux";
+const Chart = () => {
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const [page, setPage] = React.useState(0);
   const [cor, setcor] = React.useState([]);
   const [visibleRows, setVisibleRows] = React.useState([]);
-
-  const { isLoading, data: game_history } = useQuery(
-    ["trx_gamehistory_chart", gid],
-    () => GameHistoryFn(gid),
-    {
-      refetchOnMount: false,
-      refetchOnReconnect: true,
-    }
-  );
-
-  const GameHistoryFn = async (gid) => {
-    try {
-      const response = await axios.get(`${endpoint.trx_game_history}?gameid=${gid}&limit=500`);
-      return response;
-    } catch (e) {
-      toast(e?.message);
-      console.log(e);
-    }
-  };
-
-  const handleChangePage = (event, newPage) => {
+  const game_history = useSelector((state) => state.aviator.trx_game_history);
+  const isLoading = false;
+  const handleChangePage = ( newPage) => {
     setPage(newPage);
   };
 
@@ -42,19 +21,14 @@ const Chart = ({ gid }) => {
     setPage(0);
   };
 
-  const game_history_data = React.useMemo(
-    () => game_history?.data?.result,
-    [game_history?.data?.result]
-  );
-
   React.useEffect(() => {
     setVisibleRows(
-      game_history_data?.slice(
+      game_history?.slice(
         page * rowsPerPage,
         page * rowsPerPage + rowsPerPage
       )
     );
-  }, [page, rowsPerPage, game_history?.data?.result]);
+  }, [page, rowsPerPage, game_history]);
 
   React.useEffect(() => {
     if (visibleRows && !isLoading) {
@@ -117,7 +91,7 @@ const Chart = ({ gid }) => {
       </Stack>
       <div className="relative !h-[56vh] overflow-auto !w-[100%] no-scrollbar !overflow-x-hidden">
         <div className="absolute !w-[100%] !bg-red-800">
-          {visibleRows?.length > 0 &&
+          {
             visibleRows?.map((element, indexi) => {
               return (
                 <Box
@@ -305,7 +279,7 @@ const Chart = ({ gid }) => {
           }}
           rowsPerPageOptions={[10]}
           component="div"
-          count={game_history_data?.length}
+          count={game_history?.length}
           rowsPerPage={rowsPerPage}
           page={page}
           onPageChange={handleChangePage}

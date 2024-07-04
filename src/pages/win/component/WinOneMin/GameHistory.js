@@ -8,47 +8,17 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
-import axios from "axios";
 import * as React from "react";
-import toast from "react-hot-toast";
-import { useQuery } from "react-query";
 import CustomCircularProgress from "../../../../Shared/CustomCircularProgress";
-import { zubgback, zubgbackgrad, zubgtext } from "../../../../Shared/color";
+import { zubgback, zubgtext } from "../../../../Shared/color";
 import history from '../../../../assets/images/list.png';
-import { endpoint } from "../../../../services/urls";
-import { useDispatch } from "react-redux";
-import { updateNextCounter } from "../../../../redux/slices/counterSlice";
+import {  useSelector } from "react-redux";
 
 const GameHistory = ({ gid }) => {
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
   const [page, setPage] = React.useState(0);
-  const dispatch = useDispatch()
-  const { isLoading, data: game_history } = useQuery(
-    ["gamehistory", gid],
-    () => GameHistoryFn(gid),
-    {
-      refetchOnMount: false,
-      refetchOnReconnect: true,
-    }
-  );
-
-  const GameHistoryFn = async (gid) => {
-    try {
-      const response = await axios.get(
-        `${endpoint.game_history}?limit=500&offset=0&gameid=${gid}`
-      );
-      return response;
-    } catch (e) {
-      toast(e?.message);
-      console.log(e);
-    }
-  };
-
-  const game_history_data = game_history?.data?.data;
-  React.useEffect(() => {
-    dispatch(updateNextCounter(game_history?.data?.data ? Number(game_history?.data?.data?.[0]?.gamesno) + 1 : 1))
-  }, [game_history?.data?.data])
-
+  const game_history = useSelector((state) => state.aviator.trx_game_history);
+  const isLoading =false
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
@@ -60,11 +30,11 @@ const GameHistory = ({ gid }) => {
 
   const visibleRows = React.useMemo(
     () =>
-      game_history_data?.slice(
+      game_history?.slice(
         page * rowsPerPage,
         page * rowsPerPage + rowsPerPage
       ),
-    [page, rowsPerPage, game_history_data]
+    [page, rowsPerPage, game_history]
   );
 
   if (isLoading)
@@ -215,7 +185,7 @@ const GameHistory = ({ gid }) => {
             sx={{ background: zubgtext, color: 'white', }}
             rowsPerPageOptions={[5, 10, 15]}
             component="div"
-            count={game_history_data?.length}
+            count={game_history?.length}
             rowsPerPage={rowsPerPage}
             page={page}
             onPageChange={handleChangePage}

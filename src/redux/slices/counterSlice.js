@@ -4,6 +4,7 @@ export const slice = createSlice({
   name: "aviator",
   initialState: {
     value: 0,
+    user_id:localStorage.getItem("user_id"),
     // by user enabling and dissabling music and sound
     isEnableMusic: false,
     isEnableSound: false,
@@ -23,8 +24,9 @@ export const slice = createSlice({
     next_step:1,
     pendingIds:[],
     aviator_login_data:null,
-    trx_game_image_index:["A","B","C","D","E"]
-
+    trx_game_image_index:["A","B","C","D","E"],
+    trx_game_history:[],
+    wallet_real_balance:0.0
   },
   reducers: {
     // main music and sound enabling and dessabling
@@ -73,6 +75,15 @@ export const slice = createSlice({
     trx_game_image_index_function: (state,actions) => {
       state.trx_game_image_index = actions.payload;
     },
+    getUserIdFn: (state,actions) => {
+      state.user_id = actions.payload;
+    },
+    trx_game_historyFn: (state,actions) => {
+      state.trx_game_history = actions.payload;
+    },
+    wallet_real_balanceFn: (state,actions) => {
+      state.wallet_real_balance = actions.payload;
+    },
   },
 });
 
@@ -90,7 +101,10 @@ export const {
   updateNextCounter,
   pendingIdsFunction,
   aviator_login_data_fn,
-  trx_game_image_index_function
+  trx_game_image_index_function,
+  getUserIdFn,
+  trx_game_historyFn,
+  wallet_real_balanceFn
 } = slice.actions;
 
 // export const incrementAsync = amount => dispatch => {

@@ -16,6 +16,7 @@ import Policy from "../policy/Policy";
 import ShowImages from "./ShowImages";
 import {
   dummycounterFun,
+  trx_game_historyFn,
   trx_game_image_index_function,
   updateNextCounter,
 } from "../../../../redux/slices/counterSlice";
@@ -146,6 +147,7 @@ const TwoMinCountDown = ({ fk }) => {
       }
     }
     dispatch(trx_game_image_index_function(array));
+    dispatch(trx_game_historyFn(game_history?.data?.result));
   }, [game_history?.data?.result]);
 
   const audioRefMusic = React.useRef(null);

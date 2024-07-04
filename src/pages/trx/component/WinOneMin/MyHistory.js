@@ -12,10 +12,9 @@ import AccordionSummary from "@mui/material/AccordionSummary";
 import moment from "moment";
 import * as React from "react";
 import { useQuery } from "react-query";
-import { zubgback, zubgbackgrad, zubgtext, zubgwhite } from "../../../../Shared/color";
+import { zubgback, zubgtext, zubgwhite } from "../../../../Shared/color";
 import history from "../../../../assets/images/list.png";
 import {
-  MyHistoryFn,
   My_All_TRX_HistoryFn,
   My_All_TRX_HistoryPendingFn,
 } from "../../../../services/apicalling";

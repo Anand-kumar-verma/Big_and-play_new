@@ -4,7 +4,10 @@ import Dialog from "@mui/material/Dialog";
 import Slide from "@mui/material/Slide";
 import * as React from "react";
 import { useState } from "react";
-import { useQueryClient } from "react-query";
+import axios from "axios";
+import toast from "react-hot-toast";
+import { endpoint } from "../../../../services/urls";
+import {useQuery, useQueryClient } from "react-query";
 import { useDispatch, useSelector } from "react-redux";
 import { useSocket } from "../../../../Shared/SocketContext";
 import countdownfirst from "../../../../assets/countdownfirst.mp3";
@@ -21,7 +24,7 @@ import pr8 from "../../../../assets/images/8.png";
 import pr9 from "../../../../assets/images/9.png";
 import circle from "../../../../assets/images/circle-arrow.png";
 import howToPlay from "../../../../assets/images/user-guide.png";
-import { dummycounterFun } from "../../../../redux/slices/counterSlice";
+import { dummycounterFun, trx_game_historyFn, updateNextCounter } from "../../../../redux/slices/counterSlice";
 import { changeImages } from "../../../../services/schedular";
 import Policy from "../policy/Policy";
 import { zubgmid } from "../../../../Shared/color";
@@ -29,7 +32,7 @@ import { zubgmid } from "../../../../Shared/color";
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
-const OneMinCountDown = ({ fk }) => {
+const OneMinCountDown = ({ fk  }) => {
   const socket = useSocket();
   const client = useQueryClient();
   const [one_min_time, setOne_min_time] = useState(0);
@@ -92,6 +95,39 @@ const OneMinCountDown = ({ fk }) => {
       socket.off("onemin", handleOneMin);
     };
   }, []);
+
+  const { isLoading, data: game_history } = useQuery(
+    ["gamehistory_chart"],
+    () => GameHistoryFn(),
+    {
+      refetchOnMount: false,
+      refetchOnReconnect: true,
+    }
+  );
+
+  const GameHistoryFn = async () => {
+    try {
+      const response = await axios.get(
+        `${endpoint.game_history}?limit=500&offset=0&gameid=1`
+      );
+      return response;
+    } catch (e) {
+      toast(e?.message);
+      console.log(e);
+    }
+  };
+
+
+  React.useEffect(() => {
+    dispatch(
+      updateNextCounter(
+        game_history?.data?.data
+          ? Number(game_history?.data?.data?.[0]?.tr_transaction_id) + 1
+          : 1
+      )
+    );
+    dispatch(trx_game_historyFn(game_history?.data?.data));
+  }, [game_history?.data?.data]);
 
 
   const handlePlaySound = async () => {
