@@ -6,7 +6,7 @@ import axios from "axios";
 import * as React from "react";
 import { useState } from "react";
 import toast from "react-hot-toast";
-import { useQueryClient } from "react-query";
+import { useQuery, useQueryClient } from "react-query";
 import { useDispatch, useSelector } from "react-redux";
 import { useSocket } from "../../../../Shared/SocketContext";
 import countdownfirst from "../../../../assets/countdownfirst.mp3";
@@ -23,7 +23,7 @@ import pr8 from "../../../../assets/images/8.png";
 import pr9 from "../../../../assets/images/9.png";
 import circle from "../../../../assets/images/circle-arrow.png";
 import howToPlay from "../../../../assets/images/user-guide.png";
-import { dummycounterFun } from "../../../../redux/slices/counterSlice";
+import { dummycounterFun, trx_game_historyFn, updateNextCounter } from "../../../../redux/slices/counterSlice";
 import { changeImages } from "../../../../services/schedular";
 import { endpoint } from "../../../../services/urls";
 import Policy from "../policy/Policy";
@@ -105,9 +105,9 @@ const TwoMinCountDown = ({ fk }) => {
         threemin?.split("_")?.[1] === "0" &&
         threemin?.split("_")?.[0] === "0"
       ) {
-        client.refetchQueries("gamehistory");
+        // client.refetchQueries("gamehistory");
         client.refetchQueries("walletamount");
-        client.refetchQueries("gamehistory_chart");
+        client.refetchQueries("gamehistory_chart_2_min");
         client.refetchQueries("myhistory");
         client.refetchQueries("myAllhistory");
         dispatch(dummycounterFun());
@@ -120,6 +120,36 @@ const TwoMinCountDown = ({ fk }) => {
       socket.off("threemin", handleThreeMin);
     };
   }, []);
+  const { isLoading, data: game_history } = useQuery(
+    ["gamehistory_chart_2_min"],
+    () => GameHistoryFn(),
+    {
+      refetchOnMount: false,
+      refetchOnReconnect: true,
+    }
+  );
+
+  const GameHistoryFn = async () => {
+    try {
+      const response = await axios.get(
+        `${endpoint.game_history}?limit=500&offset=0&gameid=2`
+      );
+      return response;
+    } catch (e) {
+      toast(e?.message);
+      console.log(e);
+    }
+  };
+  React.useEffect(() => {
+    dispatch(
+      updateNextCounter(
+        game_history?.data?.data
+          ? Number(game_history?.data?.data?.[0]?.gamesno) + 1
+          : 1
+      )
+    );
+    dispatch(trx_game_historyFn(game_history?.data?.data));
+  }, [game_history?.data?.data]);
 
   const audioRefMusic = React.useRef(null);
   const handlePlaySound = async () => {

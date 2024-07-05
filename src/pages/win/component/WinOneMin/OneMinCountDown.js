@@ -83,8 +83,8 @@ const OneMinCountDown = ({ fk  }) => {
       if (onemin === 0) {
         client.refetchQueries("myhistory");
         client.refetchQueries("walletamount");
-        client.refetchQueries("gamehistory");
-        client.refetchQueries("gamehistory_chart");
+        // client.refetchQueries("gamehistory");
+        client.refetchQueries("gamehistory_chart_1_min");
         client.refetchQueries("myAllhistory");
         dispatch(dummycounterFun());
         fk.setFieldValue("openTimerDialogBoxOneMin", false);
@@ -97,7 +97,7 @@ const OneMinCountDown = ({ fk  }) => {
   }, []);
 
   const { isLoading, data: game_history } = useQuery(
-    ["gamehistory_chart"],
+    ["gamehistory_chart_1_min"],
     () => GameHistoryFn(),
     {
       refetchOnMount: false,
@@ -122,7 +122,7 @@ const OneMinCountDown = ({ fk  }) => {
     dispatch(
       updateNextCounter(
         game_history?.data?.data
-          ? Number(game_history?.data?.data?.[0]?.tr_transaction_id) + 1
+          ? Number(game_history?.data?.data?.[0]?.gamesno) + 1
           : 1
       )
     );

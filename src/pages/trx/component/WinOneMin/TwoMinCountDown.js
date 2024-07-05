@@ -90,8 +90,7 @@ const TwoMinCountDown = ({ fk }) => {
         threemin?.split("_")?.[1] === "0" &&
         threemin?.split("_")?.[0] === "0"
       ) {
-        client.refetchQueries("trx_gamehistory");
-        client.refetchQueries("trx_gamehistory_chart");
+        client.refetchQueries("trx_gamehistory_2_min");
         client.refetchQueries("my_trx_Allhistory");
         client.refetchQueries("my_trx_history");
         client.refetchQueries("walletamount");
@@ -108,7 +107,7 @@ const TwoMinCountDown = ({ fk }) => {
   }, []);
 
   const { isLoading, data: game_history } = useQuery(
-    ["trx_gamehistory"],
+    ["trx_gamehistory_2_min"],
     () => GameHistoryFn(),
     {
       refetchOnMount: false,
