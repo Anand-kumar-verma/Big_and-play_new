@@ -71,6 +71,7 @@ import Lottery from "./DashboadSubcomponent/Lottery";
 import Original from "./DashboadSubcomponent/Original";
 import Sports from "./DashboadSubcomponent/Sports";
 import Notification from "./Notification";
+import { CloudDownloadOutlined } from "@mui/icons-material";
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
@@ -181,6 +182,16 @@ function Dashboard() {
     }
     setlodingBanner(false);
   };
+ const handleDownload = () => {
+    const apkUrl = "https://bigandplay.com/bigandplay.apk"
+    const a = document.createElement('a');
+    a.href = apkUrl;
+    a.download = "https://bigandplay.com/bigandplay.apk" ;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+};
+
 
   // console.log(openbannerurl);
 
@@ -293,12 +304,12 @@ function Dashboard() {
                 <Box component="img" src={logo} sx={{ width: "30px" }}></Box>
                 <span className="text-[14px]"> Big And Play </span>
               </div>
-              {/* <div className="flex gap-1 items-center cursor-pointer">
-                <CloudDownloadIcon sx={{ color: zubgtext }} />
+              <div className="flex gap-1 items-center cursor-pointer" onClick={handleDownload}>
+                <CloudDownloadOutlined sx={{ color: zubgtext }} />
                 <span className="text-[12px]" style={{ color: zubgtext }}>
                   Download App
                 </span>
-              </div> */}
+              </div> 
             </div>
           </div>
           <Box className="!px-2">
