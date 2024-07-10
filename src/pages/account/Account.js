@@ -26,8 +26,6 @@ import dp2 from "../../assets/dp2.png";
 import dp3 from "../../assets/dp3.png";
 import dp4 from "../../assets/dp4.png";
 import edit from "../../assets/images/banking.png";
-import card from "../../assets/images/card-payment.png";
-import casino from "../../assets/images/casino.png";
 import customer from "../../assets/images/customer-service.png";
 import gift from "../../assets/images/gift-box-with-a-bow.png";
 import graph from "../../assets/images/graph (1).png";
